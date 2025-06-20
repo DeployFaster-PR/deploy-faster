@@ -242,7 +242,7 @@ export default function HomePage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              <h3 className="text-xl text-wrap md:text-2xl font-bold text-gray-800 mb-2">
                 <span
                   key={currentPhraseIndex}
                   className="inline-block animate-typewriter"

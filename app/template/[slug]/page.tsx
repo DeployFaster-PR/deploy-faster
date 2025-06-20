@@ -343,14 +343,14 @@ export default function TemplateDetailPage() {
       </div>
 
       {/* Fixed Contact Button - Mobile */}
-      <div className="fixed bottom-6 right-6 lg:hidden z-40">
+      {/* <div className="fixed bottom-6 right-6 lg:hidden z-40">
         <button
           onClick={() => setIsContactOpen(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-200 hover:-translate-y-1 backdrop-blur-sm border border-blue-500/20"
         >
           <MessageCircle className="w-6 h-6" />
         </button>
-      </div>
+      </div> */}
 
       {/* Share Modal */}
       {showShareModal && (
