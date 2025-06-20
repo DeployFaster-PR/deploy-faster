@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import logo from './../public/deployFasterLogo.png';
+import logo from './../public/deployfasterLogo.png';
 import Image from 'next/image';
 import ContactForm from '@/components/ContactForm';
 import { MessageCircle } from 'lucide-react';
