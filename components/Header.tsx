@@ -42,14 +42,25 @@ const Header = () => {
               />
             </Link>
 
-            {/* Contact Button */}
-            <button
-              onClick={() => setIsContactOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Contact Us
-            </button>
+            {/* Navigation and Contact */}
+            <div className="flex items-center space-x-6">
+              <Link
+                href="/blog"
+                className={`font-medium transition-colors hover:text-blue-600 ${
+                  scrolled ? 'text-gray-900' : 'text-gray-800'
+                }`}
+              >
+                Blog
+              </Link>
+
+              <button
+                onClick={() => setIsContactOpen(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Contact Us
+              </button>
+            </div>
           </div>
         </div>
       </header>

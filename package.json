@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@portabletext/react": "^3.2.1",
+    "@portabletext/types": "^2.0.13",
     "@sanity/client": "^7.6.0",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.93.0",
     "@types/nodemailer": "^6.4.17",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "lucide-react": "^0.517.0",
     "next": "15.3.3",
     "next-sanity": "^9.12.0",

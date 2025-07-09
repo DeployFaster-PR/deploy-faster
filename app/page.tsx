@@ -256,7 +256,7 @@ export default function HomePage() {
                 {searchTerm.trim() && (
                   <span className="text-blue-600 font-medium">
                     {' '}
-                    for "{searchTerm.trim()}"
+                    for &quot;{searchTerm.trim()}&quot;
                   </span>
                 )}
               </p>
@@ -295,7 +295,8 @@ export default function HomePage() {
             <p className="text-gray-500 mb-4">
               {searchTerm.trim() ? (
                 <>
-                  We couldn't find any templates matching "{searchTerm.trim()}"
+                  We could not find any templates matching &quot;
+                  {searchTerm.trim()}&quot;
                   {selectedCategory !== 'All' && ` in ${selectedCategory}`}.
                 </>
               ) : (

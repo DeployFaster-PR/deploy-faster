@@ -12,21 +12,30 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Deploy Faster - Premium Website Templates by PrimeReserved',
+    default: 'Deploy Faster - Launch Your Business Website in Days, Not Months',
     template: '%s | Deploy Faster',
   },
   description:
-    'Discover our collection of professionally designed, responsive website templates. Perfect for businesses, portfolios, and personal projects. Built with modern technologies for fast deployment.',
+    'Skip months of design and development. Deploy Faster offers professionally designed, conversion-optimized website templates for businesses of all sizes. Launch your professional website in days with our ready-to-use templates.',
   keywords: [
     'website templates',
-    'premium templates',
-    'responsive design',
-    'business templates',
-    'portfolio templates',
-    'modern web design',
-    'fast deployment',
-    'professional websites',
+    'business website templates',
+    'fast website deployment',
+    'professional website templates',
+    'website templates marketplace',
+    'business website launch',
+    'responsive website templates',
+    'conversion-optimized templates',
+    'ready-to-use websites',
+    'website development solutions',
+    'small business websites',
+    'enterprise website templates',
     'PrimeReserved',
+    'deploy faster',
+    'quick website launch',
+    'website templates for businesses',
+    'professional web design',
+    'modern website templates',
   ],
   authors: [{ name: 'PrimeReserved', url: 'https://primereserved.com' }],
   creator: 'PrimeReserved',
@@ -47,23 +56,23 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://deployfaster.primereserved.com',
     siteName: 'Deploy Faster',
-    title: 'Deploy Faster - Premium Website Templates by PrimeReserved',
+    title: 'Deploy Faster - Launch Your Business Website in Days, Not Months',
     description:
-      'Discover our collection of professionally designed, responsive website templates. Perfect for businesses, portfolios, and personal projects.',
+      'Skip months of design and development. Deploy Faster offers professionally designed, conversion-optimized website templates for businesses of all sizes. Launch your professional website in days.',
     images: [
       {
         url: 'https://res.cloudinary.com/dzd51q99i/image/upload/c_fill,w_1200,h_630/v1750354529/deployfaster/assets/Deployfaster.primereserved.com_logo_512_xwbzvj.png',
         width: 1200,
         height: 630,
-        alt: 'Deploy Faster - Premium Website Templates',
+        alt: 'Deploy Faster - Professional Website Templates Marketplace',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Deploy Faster - Premium Website Templates by PrimeReserved',
+    title: 'Deploy Faster - Launch Your Business Website in Days, Not Months',
     description:
-      'Discover our collection of professionally designed, responsive website templates. Perfect for businesses, portfolios, and personal projects.',
+      'Skip months of design and development. Deploy Faster offers professionally designed, conversion-optimized website templates for businesses of all sizes.',
     images: [
       'https://res.cloudinary.com/dzd51q99i/image/upload/c_fill,w_1200,h_630/v1750354529/deployfaster/assets/Deployfaster.primereserved.com_logo_512_xwbzvj.png',
     ],
@@ -135,16 +144,28 @@ export default function RootLayout({
               '@type': 'Organization',
               name: 'PrimeReserved',
               url: 'https://primereserved.com',
-              logo: 'https://deployfaster.primereserved.com/logo.png',
+              logo: 'https://res.cloudinary.com/dzd51q99i/image/upload/c_fill,w_512,h_512/v1750354529/deployfaster/assets/Deployfaster.primereserved.com_logo_512_xwbzvj.png',
+              description:
+                'Professional website template marketplace helping businesses launch faster',
+              foundingDate: '2024',
               sameAs: [
-                // Add your social media URLs here
+                // Add your social media URLs here when available
                 // "https://twitter.com/primereserved",
                 // "https://linkedin.com/company/primereserved"
               ],
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'customer service',
-                url: 'https://primereserved.com/contact',
+                url: 'https://deployfaster.primereserved.com/contact',
+              },
+              makesOffer: {
+                '@type': 'Offer',
+                itemOffered: {
+                  '@type': 'Service',
+                  name: 'Professional Website Templates',
+                  description:
+                    'Ready-to-use, conversion-optimized website templates for businesses',
+                },
               },
             }),
           }}
@@ -156,7 +177,8 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: 'Deploy Faster',
-              description: 'Premium website templates for fast deployment',
+              description:
+                'Professional website templates marketplace for fast business deployment',
               url: 'https://deployfaster.primereserved.com',
               publisher: {
                 '@type': 'Organization',
@@ -169,6 +191,43 @@ export default function RootLayout({
                   'https://deployfaster.primereserved.com/search?q={search_term_string}',
                 'query-input': 'required name=search_term_string',
               },
+              mainEntity: {
+                '@type': 'ItemList',
+                name: 'Website Templates',
+                description:
+                  'Professional website templates for businesses of all sizes',
+                numberOfItems: 50,
+                itemListElement: {
+                  '@type': 'ListItem',
+                  name: 'Business Website Templates',
+                },
+              },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'SoftwareApplication',
+              name: 'Deploy Faster',
+              description:
+                'Website template marketplace for rapid business deployment',
+              url: 'https://deployfaster.primereserved.com',
+              applicationCategory: 'WebApplication',
+              operatingSystem: 'Web Browser',
+              offers: {
+                '@type': 'Offer',
+                category: 'Website Templates',
+                businessFunction: 'http://purl.org/goodrelations/v1#Sell',
+                itemOffered: {
+                  '@type': 'Product',
+                  name: 'Professional Website Templates',
+                  description:
+                    'Ready-to-deploy website templates for businesses',
+                },
+              },
             }),
           }}
         />
@@ -177,9 +236,9 @@ export default function RootLayout({
         className={`${inter.className} transition-colors duration-300`}
         suppressHydrationWarning={true}
       >
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 transition-all duration-500">
+        <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 transition-all duration-500">
           <Header />
-          <main>{children}</main>
+          <main className="flex-1">{children}</main>
           <Footer />
         </div>
       </body>

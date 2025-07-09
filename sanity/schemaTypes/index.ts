@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity';
+import blog from './blog';
 
 const template = defineType({
   name: 'template',
@@ -173,5 +174,5 @@ const template = defineType({
 });
 
 export default {
-  types: [template],
+  types: [template, blog],
 };
