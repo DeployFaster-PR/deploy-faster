@@ -159,7 +159,7 @@ export default function ContactForm({
           <div className="flex items-center justify-between p-6 group">
             <div className="flex-1 min-w-0">
               <h2 className="text-xl font-semibold text-gray-900 group-hover:text-lg transition-all duration-300">
-                Get Your Template
+                Get Your Website
               </h2>
               <p className="text-sm text-orange-600 mt-1 group-hover:text-xs transition-all duration-300">
                 We'll get back to you ASAP with next steps
@@ -347,7 +347,7 @@ export default function ContactForm({
                     />
                     <div>
                       <div className="font-medium text-gray-900">
-                        Template Files Only
+                        Website Files Only
                       </div>
                       <div className="text-sm text-gray-600">
                         I'll handle the setup myself
@@ -435,7 +435,7 @@ export default function ContactForm({
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    Request Template
+                    Request Website
                   </>
                 )}
               </button>

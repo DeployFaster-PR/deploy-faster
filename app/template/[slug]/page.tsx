@@ -13,12 +13,15 @@ import {
   Code,
   MessageCircle,
   ArrowLeft,
+  ArrowRight,
   Loader2,
   Heart,
   Share2,
   X,
   Copy,
   CheckCircle,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -108,6 +111,43 @@ export default function TemplateDetailPage() {
     }
   };
 
+  // Image navigation functions
+  const nextImage = () => {
+    if (!template) return;
+    const images = [
+      { url: template.thumbnailImageUrl, alt: template.title },
+      ...(template.galleryImageUrls || []),
+    ];
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevImage = () => {
+    if (!template) return;
+    const images = [
+      { url: template.thumbnailImageUrl, alt: template.title },
+      ...(template.galleryImageUrls || []),
+    ];
+    setSelectedImageIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        prevImage();
+      } else if (e.key === 'ArrowRight') {
+        nextImage();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [template]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-blue-50/30 flex items-center justify-center">
@@ -161,42 +201,78 @@ export default function TemplateDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Images */}
           <div className="space-y-4">
-            {/* Main Image */}
-            <div className="bg-white rounded-2xl overflow-hidden shadow-xl">
-              <Image
-                src={getOptimizedImageUrl(
-                  images[selectedImageIndex].url,
-                  800,
-                  600
+            {/* Main Image Container with Navigation Arrows */}
+            <div className="bg-white rounded-2xl overflow-hidden shadow-xl relative group">
+              <div className="relative w-full aspect-[16/9] bg-gray-100">
+                <Image
+                  src={getOptimizedImageUrl(
+                    images[selectedImageIndex].url,
+                    800,
+                    450
+                  )}
+                  alt={images[selectedImageIndex].alt || template.title}
+                  fill
+                  className="object-contain transition-opacity duration-500 ease-in-out"
+                  priority={selectedImageIndex === 0}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                />
+
+                {/* Navigation Arrows - Only show if more than 1 image */}
+                {images.length > 1 && (
+                  <>
+                    {/* Left Arrow */}
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/17 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+
+                    {/* Right Arrow */}
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/17 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+
+                    {/* Image Counter */}
+                    <div className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {selectedImageIndex + 1} / {images.length}
+                    </div>
+                  </>
                 )}
-                alt={images[selectedImageIndex].alt || template.title}
-                width={800}
-                height={600}
-                className="w-full h-64 sm:h-80 md:h-96 object-cover"
-                priority={selectedImageIndex === 0}
-              />
+              </div>
             </div>
 
-            {/* Image Gallery */}
+            {/* Image Gallery - Improved */}
             {images.length > 1 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
-                    className={`relative overflow-hidden rounded-xl ${
+                    className={`relative overflow-hidden rounded-xl transition-all duration-300 ease-in-out transform ${
                       selectedImageIndex === index
-                        ? 'ring-2 ring-blue-500 shadow-lg'
-                        : 'hover:opacity-80 shadow-md'
-                    } transition-all duration-200`}
+                        ? 'ring-2 ring-blue-500 shadow-lg scale-105'
+                        : 'hover:scale-102 shadow-md hover:shadow-lg'
+                    }`}
                   >
-                    <Image
-                      src={getOptimizedImageUrl(image.url, 200, 150)}
-                      alt={image.alt || `${template.title} ${index + 1}`}
-                      width={200}
-                      height={150}
-                      className="w-full h-16 sm:h-20 object-cover"
-                    />
+                    <div className="relative w-full aspect-[16/9] bg-gray-100">
+                      <Image
+                        src={getOptimizedImageUrl(image.url, 800, 450)}
+                        alt={image.alt || `${template.title} ${index + 1}`}
+                        fill
+                        className="object-contain transition-opacity duration-300 ease-in-out"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 150px"
+                      />
+                    </div>
+                    {/* Overlay for non-selected images */}
+                    {selectedImageIndex !== index && (
+                      <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 ease-in-out hover:bg-black/5" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -341,16 +417,6 @@ export default function TemplateDetailPage() {
           </div>
         )}
       </div>
-
-      {/* Fixed Contact Button - Mobile */}
-      {/* <div className="fixed bottom-6 right-6 lg:hidden z-40">
-        <button
-          onClick={() => setIsContactOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-200 hover:-translate-y-1 backdrop-blur-sm border border-blue-500/20"
-        >
-          <MessageCircle className="w-6 h-6" />
-        </button>
-      </div> */}
 
       {/* Share Modal */}
       {showShareModal && (
