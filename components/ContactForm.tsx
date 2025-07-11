@@ -115,15 +115,18 @@ export default function ContactForm({
           // Server validation error
           setError(data.error);
         } else {
-          throw new Error('Failed to send message');
+          throw new Error(data.error || 'Failed to send message');
         }
         return;
       }
 
       setIsSuccess(true);
-    } catch (error) {
+    } catch (err) {
+      // Use the actual error message if available, otherwise use a generic message
+      const errorMessage =
+        err instanceof Error ? err.message : 'Unknown error occurred';
       setError(
-        'Failed to send request. Please check your connection and try again.'
+        `Failed to send request: ${errorMessage}. Please check your connection and try again.`
       );
     } finally {
       setIsSubmitting(false);
@@ -153,7 +156,7 @@ export default function ContactForm({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-apple-xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         {/* Header - Sticky with scroll-responsive sizing */}
         <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 transition-all duration-300">
           <div className="flex items-center justify-between p-6 group">
@@ -162,7 +165,7 @@ export default function ContactForm({
                 Get Your Website
               </h2>
               <p className="text-sm text-orange-600 mt-1 group-hover:text-xs transition-all duration-300">
-                We'll get back to you ASAP with next steps
+                We&#39;ll get back to you ASAP with next steps
               </p>
               {templateTitle && (
                 <p className="text-sm text-blue-600 mt-1 font-medium group-hover:text-xs transition-all duration-300 truncate">
@@ -188,7 +191,7 @@ export default function ContactForm({
               Request Submitted Successfully!
             </h3>
             <p className="text-gray-600 mb-2">
-              We'll contact you ASAP with payment details and next steps.
+              We&#39;ll contact you ASAP with payment details and next steps.
             </p>
             <p className="text-sm text-gray-500 mb-4">
               Check your email for confirmation details.
@@ -213,7 +216,7 @@ export default function ContactForm({
                   templateFeatured: templateFeatured || false,
                 });
               }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-apple-lg font-medium transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
             >
               Close
             </button>
@@ -230,7 +233,7 @@ export default function ContactForm({
             >
               {/* Validation Errors - Now at the top */}
               {validationErrors.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-apple-lg p-4 mb-6">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
@@ -260,7 +263,7 @@ export default function ContactForm({
 
               {/* Server Error */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-apple-lg p-4 mb-6">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
@@ -290,7 +293,7 @@ export default function ContactForm({
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-apple-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -308,7 +311,7 @@ export default function ContactForm({
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-apple-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                   placeholder="your.email@example.com"
                 />
               </div>
@@ -326,7 +329,7 @@ export default function ContactForm({
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-apple-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
@@ -336,7 +339,7 @@ export default function ContactForm({
                   Service Required *
                 </label>
                 <div className="space-y-3">
-                  <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-apple-lg hover:bg-gray-50 cursor-pointer">
+                  <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                     <input
                       type="radio"
                       name="serviceType"
@@ -350,11 +353,11 @@ export default function ContactForm({
                         Website Files Only
                       </div>
                       <div className="text-sm text-gray-600">
-                        I'll handle the setup myself
+                        I&#39;ll handle the setup myself
                       </div>
                     </div>
                   </label>
-                  <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-apple-lg hover:bg-gray-50 cursor-pointer">
+                  <label className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                     <input
                       type="radio"
                       name="serviceType"
@@ -390,7 +393,7 @@ export default function ContactForm({
                   name="launchTimeline"
                   value={formData.launchTimeline}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-apple-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 >
                   <option value="">Select timeline</option>
                   <option value="3-6-days">3-6 days</option>
@@ -412,20 +415,19 @@ export default function ContactForm({
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-apple-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
                   placeholder="Tell us about your business, company, or project..."
                 />
               </div>
             </form>
 
             {/* Sticky Submit Button */}
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 shadow-deep-glass p-6">
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 shadow-lg p-6">
               <button
                 type="submit"
                 form="contact-form"
                 disabled={isSubmitting}
-                onClick={handleSubmit}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-3 rounded-apple-lg font-medium transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

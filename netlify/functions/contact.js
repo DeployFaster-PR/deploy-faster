@@ -1,8 +1,15 @@
-// app/api/contact/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+// netlify/functions/contact.js
 import nodemailer from 'nodemailer';
 
-export async function POST(request: NextRequest) {
+export const handler = async (event) => {
+  // Only allow POST requests
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
+  }
+
   try {
     const {
       name,
@@ -16,7 +23,7 @@ export async function POST(request: NextRequest) {
       templatePrice,
       templateUrl,
       templateFeatured,
-    } = await request.json();
+    } = JSON.parse(event.body);
 
     // Validate required fields
     if (
@@ -27,56 +34,20 @@ export async function POST(request: NextRequest) {
       !launchTimeline ||
       !message
     ) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Please enter a valid email address' },
-        { status: 400 }
-      );
-    }
-
-    // Validate message length
-    if (message.trim().length < 10) {
-      return NextResponse.json(
-        { error: 'Project description should be at least 10 characters long' },
-        { status: 400 }
-      );
-    }
-
-    // Validate phone number (basic validation)
-    if (phone.trim().length < 10) {
-      return NextResponse.json(
-        { error: 'Please enter a valid phone number' },
-        { status: 400 }
-      );
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'All fields are required' }),
+      };
     }
 
     // Create transporter
-    const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransporter({
       service: 'gmail',
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD,
       },
     });
-
-    // Verify transporter configuration
-    try {
-      await transporter.verify();
-    } catch (verifyError) {
-      console.error('Email transporter verification failed:', verifyError);
-      return NextResponse.json(
-        { error: 'Email service configuration error' },
-        { status: 500 }
-      );
-    }
 
     // Get service type display text
     const serviceTypeText =
@@ -85,7 +56,7 @@ export async function POST(request: NextRequest) {
         : 'Complete Setup Service (Additional fee applies)';
 
     // Timeline mapping with proper type safety
-    const timelineMapping: Record<string, string> = {
+    const timelineMapping = {
       '3-6-days': '3-6 days',
       '1-2-weeks': '1-2 weeks',
       '2-3-weeks': '2-3 weeks',
@@ -286,58 +257,15 @@ export async function POST(request: NextRequest) {
       transporter.sendMail(clientAutoReply),
     ]);
 
-    return NextResponse.json(
-      { message: 'Request submitted successfully' },
-      { status: 200 }
-    );
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Request submitted successfully' }),
+    };
   } catch (error) {
     console.error('Error processing request:', error);
-
-    // More specific error handling
-    if (error instanceof Error) {
-      // Gmail authentication errors
-      if (
-        error.message.includes('Invalid login') ||
-        error.message.includes('Authentication failed')
-      ) {
-        return NextResponse.json(
-          {
-            error:
-              'Email authentication failed. Please check your credentials.',
-          },
-          { status: 500 }
-        );
-      }
-
-      // Network/connection errors
-      if (
-        error.message.includes('ECONNREFUSED') ||
-        error.message.includes('ETIMEDOUT')
-      ) {
-        return NextResponse.json(
-          {
-            error:
-              'Email service temporarily unavailable. Please try again later.',
-          },
-          { status: 503 }
-        );
-      }
-
-      // Rate limiting errors
-      if (
-        error.message.includes('rate limit') ||
-        error.message.includes('quota')
-      ) {
-        return NextResponse.json(
-          { error: 'Too many requests. Please wait a moment and try again.' },
-          { status: 429 }
-        );
-      }
-    }
-
-    return NextResponse.json(
-      { error: 'Failed to process request. Please try again.' },
-      { status: 500 }
-    );
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to process request' }),
+    };
   }
-}
+};
