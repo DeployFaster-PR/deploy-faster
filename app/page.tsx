@@ -13,30 +13,28 @@ const TEMPLATES_PER_PAGE = 4;
 // High-impact conversion phrases for website template marketplace
 const ROTATING_PHRASES = [
   // Speed & Time-focused
-  'Launch in Minutes, Not Months',
+  'Launch in Days, Not Months',
   'Your Website Goes Live Today',
   'Skip the Wait, Start Selling',
-  'From Zero to Hero in Hours',
+  'From Zero to Hero in Days',
   'Instant Website, Instant Results',
   'Why Wait? Launch Now',
   'Fast-Track Your Success',
-  'Website Ready in 60 Minutes',
+  'Website Ready in 48 hours',
 
   // Transformation & Results
   'Turn Visitors into Customers',
-  'Templates That Actually Convert',
+  'Websites That Actually Convert',
   'From Idea to Income, Fast',
   'Stop Losing Customers to Slow Sites',
   'Professional Results, Zero Hassle',
-  'Build Your Empire Today',
-  'Revenue-Ready Templates',
+  'Take Your Business Online Today',
+  'Revenue-Ready Websites',
 
   // Action & Urgency
   "Don't Build, Deploy",
   'Start Earning While Others Wait',
   'Your Success Story Starts Here',
-  'Be Live Before Lunch',
-  'Launch First, Perfect Later',
   'Ready-Made Revenue Machines',
   'Business-Ready in a Click',
   'Deploy. Dominate. Done.',
@@ -47,16 +45,10 @@ const ROTATING_PHRASES = [
   'Finally, Websites That Work',
   'Success Has Never Been Faster',
   'The Fast Lane to Profit',
-  'Shortcut to Success',
   'Instant Professional Presence',
-  'Your Breakthrough Moment',
 
   // Problem-solving
-  'No More Developer Drama',
-  'Skip the Tech Headaches',
-  'Code-Free Success Stories',
   'Design Without the Delay',
-  'Professional Without the Price Tag',
   'Enterprise Quality, Startup Speed',
   'Big Results, Small Timeline',
   'Maximum Impact, Minimum Wait',
