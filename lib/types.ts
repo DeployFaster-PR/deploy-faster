@@ -6,6 +6,12 @@ export interface GalleryImage {
   alt?: string;
 }
 
+export interface TemplatePricing {
+  ngn: number;
+  usd: number;
+  gbp: number;
+}
+
 export interface Template {
   _id: string;
   title: string;
@@ -16,6 +22,8 @@ export interface Template {
   tags: string[];
   price: number;
   currency: string;
+  // New multi-currency pricing (optional for backward compatibility)
+  pricing?: TemplatePricing;
   previewUrl: string;
   thumbnailImageUrl: string;
   galleryImageUrls?: GalleryImage[];
@@ -47,4 +55,13 @@ export interface ContactFormData {
   templatePrice: string;
   templateUrl: string;
   templateFeatured: boolean;
+}
+
+export type SupportedCurrency = 'NGN' | 'USD' | 'GBP';
+
+export interface CurrencyInfo {
+  code: SupportedCurrency;
+  symbol: string;
+  name: string;
+  flag: string;
 }

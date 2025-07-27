@@ -61,24 +61,45 @@ const template = defineType({
         layout: 'tags',
       },
     }),
+    // Updated pricing structure to support multiple currencies
+    defineField({
+      name: 'pricing',
+      title: 'Pricing',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'ngn',
+          title: 'Price in Nigerian Naira (NGN)',
+          type: 'number',
+          validation: (Rule) => Rule.required().positive(),
+        }),
+        defineField({
+          name: 'usd',
+          title: 'Price in US Dollars (USD)',
+          type: 'number',
+          validation: (Rule) => Rule.required().positive(),
+        }),
+        defineField({
+          name: 'gbp',
+          title: 'Price in British Pounds (GBP)',
+          type: 'number',
+          validation: (Rule) => Rule.required().positive(),
+        }),
+      ],
+      validation: (Rule) => Rule.required(),
+    }),
+    // Keep legacy fields for backward compatibility (you can remove these later)
     defineField({
       name: 'price',
-      title: 'Price',
+      title: 'Legacy Price (Deprecated)',
       type: 'number',
-      validation: (Rule) => Rule.required(),
+      hidden: true, // Hide from studio UI
     }),
     defineField({
       name: 'currency',
-      title: 'Currency',
+      title: 'Legacy Currency (Deprecated)',
       type: 'string',
-      initialValue: 'NGN',
-      options: {
-        list: [
-          { title: 'Nigerian Naira', value: 'NGN' },
-          { title: 'US Dollar', value: 'USD' },
-          { title: 'Euro', value: 'EUR' },
-        ],
-      },
+      hidden: true, // Hide from studio UI
     }),
     defineField({
       name: 'previewUrl',
@@ -160,14 +181,13 @@ const template = defineType({
       title: 'title',
       thumbnailUrl: 'thumbnailImageUrl',
       category: 'category',
+      pricing: 'pricing',
     },
     prepare(selection) {
-      const { title, thumbnailUrl, category } = selection;
+      const { title, thumbnailUrl, category, pricing } = selection;
       return {
         title: title,
-        subtitle: category,
-        // For preview in Sanity Studio, you can show the URL or use it as media
-        // media: thumbnailUrl,
+        subtitle: `${category} - ₦${pricing?.ngn || 0} | $${pricing?.usd || 0} | £${pricing?.gbp || 0}`,
       };
     },
   },

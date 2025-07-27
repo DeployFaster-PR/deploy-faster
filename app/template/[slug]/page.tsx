@@ -6,6 +6,8 @@ import { client } from '@/lib/sanity';
 import { templateBySlugQuery } from '@/lib/sanity-queries';
 import { Template } from '@/lib/types';
 import ContactForm from '@/components/ContactForm';
+import CurrencySelector from '@/components/CurrencySelector';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import {
   ExternalLink,
   Star,
@@ -13,8 +15,10 @@ import {
   Code,
   MessageCircle,
   ArrowLeft,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ArrowRight,
   Loader2,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Heart,
   Share2,
   X,
@@ -22,6 +26,7 @@ import {
   CheckCircle,
   ChevronLeft,
   ChevronRight,
+  DollarSign,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -30,6 +35,7 @@ import { PortableText } from '@portabletext/react';
 export default function TemplateDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const { formatPrice } = useCurrency();
 
   const [template, setTemplate] = useState<Template | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,14 +64,6 @@ export default function TemplateDetailPage() {
     }
   }, [slug]);
 
-  const formatPrice = (price: number, currency: string) => {
-    return new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
   const getOptimizedImageUrl = (
     url: string,
     width: number,
@@ -93,6 +91,7 @@ export default function TemplateDetailPage() {
       await navigator.clipboard.writeText(currentUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       // Fallback for older browsers
       const textArea = document.createElement('textarea');
@@ -167,7 +166,7 @@ export default function TemplateDetailPage() {
             Template Not Found
           </h1>
           <p className="text-gray-600 mb-6">
-            The template you're looking for doesn't exist.
+            The template you&apos;re looking for doesn&apos;t exist.
           </p>
           <Link
             href="/"
@@ -189,14 +188,25 @@ export default function TemplateDetailPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-blue-50/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
-        {/* Back Button */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Templates
-        </Link>
+        {/* Header with Back Button and Currency Selector */}
+        <div className="flex items-center justify-between mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Templates
+          </Link>
+
+          {/* Currency Selector */}
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
+              <DollarSign className="w-4 h-4" />
+              <span>Currency:</span>
+            </div>
+            <CurrencySelector compact />
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Images */}
@@ -309,7 +319,7 @@ export default function TemplateDetailPage() {
 
               <div className="text-right mb-4">
                 <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  {formatPrice(template.price, template.currency)}
+                  {formatPrice(template)}
                 </div>
               </div>
 
@@ -522,7 +532,7 @@ export default function TemplateDetailPage() {
         onClose={() => setIsContactOpen(false)}
         templateId={template._id}
         templateTitle={template.title}
-        templatePrice={formatPrice(template.price, template.currency)}
+        templatePrice={formatPrice(template)}
         templateUrl={typeof window !== 'undefined' ? window.location.href : ''}
         templateFeatured={template.featured || false}
       />

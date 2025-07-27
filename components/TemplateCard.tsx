@@ -2,19 +2,14 @@ import { Template } from '@/lib/types';
 import { ExternalLink, Star } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface TemplateCardProps {
   template: Template;
 }
 
 export default function TemplateCard({ template }: TemplateCardProps) {
-  const formatPrice = (price: number, currency: string) => {
-    return new Intl.NumberFormat('en-NG', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+  const { formatPrice } = useCurrency();
 
   return (
     <div className="group animate-slide-up">
@@ -55,7 +50,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
               {template.title}
             </h3>
             <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent whitespace-nowrap">
-              {formatPrice(template.price, template.currency)}
+              {formatPrice(template)}
             </span>
           </div>
 

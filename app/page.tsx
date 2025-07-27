@@ -6,7 +6,8 @@ import { templatesQuery } from '@/lib/sanity-queries';
 import { Template } from '@/lib/types';
 import TemplateCard from '@/components/TemplateCard';
 import SearchAndFilter from '@/components/SearchAndFilter';
-import { ChevronUp, Heart, Search, Loader2 } from 'lucide-react';
+import CurrencySelector from '@/components/CurrencySelector';
+import { ChevronUp, Heart, Search, Loader2, DollarSign } from 'lucide-react';
 
 const TEMPLATES_PER_PAGE = 4;
 
@@ -230,36 +231,45 @@ export default function HomePage() {
   return (
     <div className="min-h-screen pb-32 bg-gradient-to-br from-gray-50 via-gray-100 to-blue-50/30">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Results Count with Rotating Text */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xl text-wrap md:text-2xl font-bold text-gray-800 mb-2">
-                <span
-                  key={currentPhraseIndex}
-                  className="inline-block animate-typewriter"
-                >
-                  {ROTATING_PHRASES[currentPhraseIndex]}
+        {/* Header with Currency Selector */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex-1">
+            <h3 className="text-xl text-wrap md:text-2xl font-bold text-gray-800 mb-2">
+              <span
+                key={currentPhraseIndex}
+                className="inline-block animate-typewriter"
+              >
+                {ROTATING_PHRASES[currentPhraseIndex]}
+              </span>
+            </h3>
+            <p className="text-gray-700">
+              Showing {displayedTemplates.length} of {filteredTemplates.length}{' '}
+              templates
+              {searchTerm.trim() && (
+                <span className="text-blue-600 font-medium">
+                  {' '}
+                  for &quot;{searchTerm.trim()}&quot;
                 </span>
-              </h3>
-              <p className="text-gray-700">
-                Showing {displayedTemplates.length} of{' '}
-                {filteredTemplates.length} templates
-                {searchTerm.trim() && (
-                  <span className="text-blue-600 font-medium">
-                    {' '}
-                    for &quot;{searchTerm.trim()}&quot;
-                  </span>
-                )}
-              </p>
-            </div>
+              )}
+            </p>
+          </div>
 
+          {/* Currency Selector */}
+          <div className="flex items-center gap-4">
             {filteredTemplates.length > 0 && (
               <div className="hidden md:flex items-center gap-2 text-sm text-gray-500">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 Updated recently
               </div>
             )}
+
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
+                <DollarSign className="w-4 h-4" />
+                <span>Currency:</span>
+              </div>
+              <CurrencySelector compact />
+            </div>
           </div>
         </div>
 
