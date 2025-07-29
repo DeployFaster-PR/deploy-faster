@@ -48,6 +48,7 @@ const template = defineType({
           { title: 'Blog', value: 'Blog' },
           { title: 'SaaS', value: 'SaaS' },
           { title: 'Real Estate', value: 'Real Estate' },
+          { title: 'Energy & Industrial', value: 'Energy & Industrial' },
         ],
       },
       validation: (Rule) => Rule.required(),
@@ -184,6 +185,7 @@ const template = defineType({
       pricing: 'pricing',
     },
     prepare(selection) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { title, thumbnailUrl, category, pricing } = selection;
       return {
         title: title,
@@ -192,6 +194,35 @@ const template = defineType({
     },
   },
 });
+
+// TypeScript interface for the Template type
+export interface Template {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  longDescription?: any[];
+  category: string;
+  tags: string[];
+  pricing?: {
+    ngn: number;
+    usd: number;
+    gbp: number;
+  };
+  price?: number;
+  currency?: string;
+  previewUrl: string;
+  thumbnailImageUrl: string;
+  galleryImageUrls?: {
+    url: string;
+    alt?: string;
+  }[];
+  features?: string[];
+  technologies?: string[];
+  featured: boolean;
+  createdAt: string;
+}
 
 export default {
   types: [template, blog],
