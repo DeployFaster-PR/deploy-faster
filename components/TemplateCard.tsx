@@ -84,15 +84,15 @@ export default function TemplateCard({ template }: TemplateCardProps) {
             >
               View Details
             </Link>
-            <a
-              href={template.previewUrl}
+            <Link
+              href={`/template/${template.slug}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-gray-50 hover:bg-gray-100 border border-gray-200 p-3 rounded-apple transition-all duration-200 flex items-center justify-center group"
-              title="Live Preview"
+              title="View Details (New Tab)"
             >
               <ExternalLink className="w-4 h-4 text-gray-700 group-hover:text-blue-600 transition-colors" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>
