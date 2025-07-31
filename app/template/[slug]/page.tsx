@@ -13,6 +13,7 @@ import {
   Star,
   Check,
   Code,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   MessageCircle,
   ArrowLeft,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -27,6 +28,7 @@ import {
   ChevronLeft,
   ChevronRight,
   DollarSign,
+  Zap,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -83,6 +85,11 @@ export default function TemplateDetailPage() {
 
   const handleShare = () => {
     setShowShareModal(true);
+  };
+
+  const handleGetTemplate = () => {
+    setShowPreview(false);
+    setIsContactOpen(true);
   };
 
   const handleCopyLink = async () => {
@@ -187,6 +194,79 @@ export default function TemplateDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-blue-50/30">
+      {/* Add custom styles for animated border */}
+      <style jsx>{`
+        @keyframes rotate-border {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            left: -100%;
+          }
+          100% {
+            left: 100%;
+          }
+        }
+
+        .animated-border {
+          position: relative;
+          background: linear-gradient(
+            -45deg,
+            #ff0066,
+            #00ffff,
+            #0066ff,
+            #00ff66,
+            #ffff00,
+            #ff3366,
+            #3366ff,
+            #ff6600
+          );
+          background-size: 400% 400%;
+          animation: rotate-border 2s ease infinite;
+          border-radius: 1rem;
+          padding: 4px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .animated-border:hover {
+          animation-play-state: paused;
+        }
+
+        .animated-border-inner {
+          background: linear-gradient(to bottom right, #1e40af, #1e3a8a);
+          border-radius: calc(1rem - 4px);
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+        }
+
+        .animated-border-inner::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent
+          );
+          animation: shimmer 1.5s infinite;
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         {/* Header with Back Button and Currency Selector */}
         <div className="flex items-center justify-between mb-8">
@@ -386,28 +466,36 @@ export default function TemplateDetailPage() {
             {/* Sticky Action Buttons */}
             <div className="sticky bottom-6 pt-6 pb-2">
               <div className="space-y-3">
-                <button
-                  onClick={() => setIsContactOpen(true)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-2xl font-semibold text-lg transition-all duration-200 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 flex items-center justify-center gap-2"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  Get This Template
-                </button>
+                {/* Main CTA with Animated Border */}
+                <div className="animated-border">
+                  <button
+                    onClick={handleGetTemplate}
+                    className="animated-border-inner w-full text-white py-4 px-6 font-bold text-md transition-all duration-300 hover:shadow-2xl flex items-center justify-center gap-3"
+                  >
+                    <Zap className="w-6 h-6" />
+                    <span className="text-sm md:text-md uppercase">
+                      Contact Our Team & Get This Website Now!
+                    </span>
+                    <Zap className="w-6 h-6" />
+                  </button>
+                </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setShowPreview(true)}
-                    className="bg-white/80 backdrop-blur-sm hover:bg-white/90 text-gray-800 py-3 px-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border border-white/20"
+                    className="bg-gradient-to-br from-blue-600 to-blue-900 hover:from-blue-500 hover:to-blue-800 text-white py-3 px-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border border-blue-400/25 cursor-pointer"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    Preview
+                    <span className="border-b-2 border-amber-400 text-xs md:text-sm">
+                      Preview Website
+                    </span>
                   </button>
                   <button
                     onClick={handleShare}
-                    className="bg-white/80 backdrop-blur-sm hover:bg-white/90 text-gray-800 py-3 px-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border border-white/20"
+                    className="bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-100 text-black py-3 px-4 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 border border-purple-500/20 cursor-pointer"
                   >
                     <Share2 className="w-4 h-4" />
-                    Share
+                    <span className="text-xs md:text-sm">Share</span>
                   </button>
                 </div>
               </div>
@@ -488,24 +576,24 @@ export default function TemplateDetailPage() {
         </div>
       )}
 
-      {/* Preview Modal */}
+      {/* Enhanced Preview Modal - 98% width and height */}
       {showPreview && (
-        <div className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-6xl h-full max-h-[90vh] flex flex-col shadow-2xl">
-            <div className="flex items-center justify-between p-4 border-b">
-              <div className="flex items-center gap-3">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-[1%]">
+          <div className="bg-white rounded-2xl w-full h-full flex flex-col shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b bg-white relative z-10">
+              <div className="flex items-center gap-4">
                 <h3 className="text-lg font-semibold">
                   {template.title} - Live Preview
                 </h3>
-                <a
-                  href={template.previewUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  Open in new tab
-                </a>
+                <div className="animated-border">
+                  <button
+                    onClick={handleGetTemplate}
+                    className="animated-border-inner text-white px-6 py-2 font-semibold text-sm transition-all duration-300 flex items-center gap-2 cursor-pointer"
+                  >
+                    <Zap className="w-4 h-4" />
+                    Contact Our Team & Get This Website Now!
+                  </button>
+                </div>
               </div>
               <button
                 onClick={() => setShowPreview(false)}
