@@ -371,10 +371,8 @@ export default function ContactForm({
                         Complete Setup Service
                       </div>
                       <div className="text-sm text-gray-600">
-                        Full deployment + content customization
-                      </div>
-                      <div className="text-xs text-orange-600 font-medium mt-1">
-                        Additional fee applies
+                        Full deployment, content customization, domain
+                        registration, hosting & email services
                       </div>
                     </div>
                   </label>
