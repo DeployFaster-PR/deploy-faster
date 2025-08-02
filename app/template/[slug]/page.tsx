@@ -580,12 +580,15 @@ export default function TemplateDetailPage() {
       {showPreview && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-[1%]">
           <div className="bg-white rounded-2xl w-full h-full flex flex-col shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b bg-white relative z-10">
-              <div className="flex items-center gap-4">
-                <h3 className="text-lg font-semibold">
-                  {template.title} - Live Preview
+            <div className="flex items-center justify-between p-2 sm:p-4 border-b bg-white relative z-10">
+              <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+                <h3 className="text-sm sm:text-lg font-semibold truncate">
+                  <span className="hidden sm:inline">
+                    {template.title} - Live Preview
+                  </span>
+                  <span className="sm:hidden">{template.title}</span>
                 </h3>
-                <div className="animated-border">
+                <div className="animated-border hidden sm:block">
                   <button
                     onClick={handleGetTemplate}
                     className="animated-border-inner text-white px-6 py-2 font-semibold text-sm transition-all duration-300 flex items-center gap-2 cursor-pointer"
@@ -594,12 +597,22 @@ export default function TemplateDetailPage() {
                     Contact Our Team & Get This Website Now!
                   </button>
                 </div>
+                {/* Mobile CTA Button */}
+                <div className="animated-border sm:hidden">
+                  <button
+                    onClick={handleGetTemplate}
+                    className="animated-border-inner text-white px-3 py-1.5 font-semibold text-xs transition-all duration-300 flex items-center gap-1 cursor-pointer"
+                  >
+                    <Zap className="w-3 h-3" />
+                    Get Now
+                  </button>
+                </div>
               </div>
               <button
                 onClick={() => setShowPreview(false)}
-                className="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="text-gray-500 hover:text-gray-700 p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0 ml-2"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
             <div className="flex-1 overflow-hidden">
