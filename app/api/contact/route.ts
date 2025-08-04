@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
     await Promise.all([
       // Email to admin
       resend.emails.send({
-        from: 'Deploy Faster <onboarding@resend.dev>',
+        from: 'Deploy Faster <noreply@deployfaster.primereserved.com>',
         to: [process.env.ADMIN_EMAIL || 'primereserved@gmail.com'],
         subject: `🚀 New Template Request${templateTitle ? ` - ${templateTitle}` : ''}`,
         html: `
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
 
       // Auto-reply to client
       resend.emails.send({
-        from: 'Deploy Faster <onboarding@resend.dev>',
+        from: 'Deploy Faster <noreply@deployfaster.primereserved.com>',
         to: [email],
         subject: `✅ Template Request Received - Deploy Faster`,
         html: `
