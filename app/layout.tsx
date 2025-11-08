@@ -239,7 +239,7 @@ export default function RootLayout({
       >
         <CurrencyProvider>
           <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 transition-all duration-500">
-            {/* <Header /> */}
+            <Header />
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
