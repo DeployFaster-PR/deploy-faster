@@ -42,3 +42,7 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
+
+# Claude Code and MCP tools
+.claude/
+.playwright-mcp/
