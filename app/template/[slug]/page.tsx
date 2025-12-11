@@ -6,7 +6,6 @@ import { client } from '@/lib/sanity';
 import { templateBySlugQuery } from '@/lib/sanity-queries';
 import { Template } from '@/lib/types';
 import ContactForm from '@/components/ContactForm';
-import CurrencySelector from '@/components/CurrencySelector';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import {
   ExternalLink,
@@ -27,7 +26,6 @@ import {
   CheckCircle,
   ChevronLeft,
   ChevronRight,
-  DollarSign,
   Zap,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -46,6 +44,8 @@ export default function TemplateDetailPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [previousImageIndex, setPreviousImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -117,27 +117,47 @@ export default function TemplateDetailPage() {
     }
   };
 
-  // Image navigation functions
+  // Image navigation functions with animation
   const nextImage = () => {
-    if (!template) return;
+    if (!template || isTransitioning) return;
     const images = [
       { url: template.thumbnailImageUrl, alt: template.title },
       ...(template.galleryImageUrls || []),
     ];
-    setSelectedImageIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
+
+    setPreviousImageIndex(selectedImageIndex);
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setSelectedImageIndex((prevIndex) =>
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 50);
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 500);
   };
 
   const prevImage = () => {
-    if (!template) return;
+    if (!template || isTransitioning) return;
     const images = [
       { url: template.thumbnailImageUrl, alt: template.title },
       ...(template.galleryImageUrls || []),
     ];
-    setSelectedImageIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+
+    setPreviousImageIndex(selectedImageIndex);
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setSelectedImageIndex((prevIndex) =>
+        prevIndex === 0 ? images.length - 1 : prevIndex - 1
+      );
+    }, 50);
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 500);
   };
 
   // Keyboard navigation
@@ -194,7 +214,7 @@ export default function TemplateDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-blue-50/30">
-      {/* Add custom styles for animated border */}
+      {/* Add custom styles for animated border and puzzle effect */}
       <style jsx>{`
         @keyframes rotate-border {
           0% {
@@ -214,6 +234,51 @@ export default function TemplateDetailPage() {
           }
           100% {
             left: 100%;
+          }
+        }
+
+        .grid-overlay {
+          position: absolute;
+          inset: 0;
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          grid-template-rows: repeat(4, 1fr);
+          z-index: 20;
+        }
+
+        .grid-piece {
+          position: relative;
+          overflow: hidden;
+          background-size: 600% 400%;
+        }
+
+        .grid-piece-out {
+          animation: pieceOut 0.5s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards;
+        }
+
+        .grid-piece-in {
+          animation: pieceIn 0.5s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards;
+        }
+
+        @keyframes pieceOut {
+          0% {
+            opacity: 1;
+            transform: translate(0, 0) rotate(0deg) scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: translate(var(--tx), var(--ty)) rotate(var(--rotate)) scale(0.3);
+          }
+        }
+
+        @keyframes pieceIn {
+          0% {
+            opacity: 0;
+            transform: translate(var(--tx), var(--ty)) rotate(var(--rotate)) scale(0.3);
+          }
+          100% {
+            opacity: 1;
+            transform: translate(0, 0) rotate(0deg) scale(1);
           }
         }
 
@@ -268,7 +333,7 @@ export default function TemplateDetailPage() {
       `}</style>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
-        {/* Header with Back Button and Currency Selector */}
+        {/* Header with Back Button */}
         <div className="flex items-center justify-between mb-8">
           <Link
             href="/"
@@ -277,15 +342,6 @@ export default function TemplateDetailPage() {
             <ArrowLeft className="w-4 h-4" />
             Back to Templates
           </Link>
-
-          {/* Currency Selector */}
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
-              <DollarSign className="w-4 h-4" />
-              <span>Currency:</span>
-            </div>
-            <CurrencySelector compact />
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -294,7 +350,9 @@ export default function TemplateDetailPage() {
             {/* Main Image Container with Navigation Arrows */}
             <div className="bg-white rounded-2xl overflow-hidden shadow-xl relative group">
               <div className="relative w-full aspect-[16/9] bg-gray-100">
+                {/* Base current image */}
                 <Image
+                  key={`base-${selectedImageIndex}`}
                   src={getOptimizedImageUrl(
                     images[selectedImageIndex].url,
                     800,
@@ -302,10 +360,74 @@ export default function TemplateDetailPage() {
                   )}
                   alt={images[selectedImageIndex].alt || template.title}
                   fill
-                  className="object-contain transition-opacity duration-500 ease-in-out"
+                  className="object-contain absolute inset-0"
                   priority={selectedImageIndex === 0}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 />
+
+                {/* Grid overlay for outgoing image */}
+                {isTransitioning && previousImageIndex !== selectedImageIndex && (
+                  <div className="grid-overlay">
+                    {Array.from({ length: 24 }).map((_, i) => {
+                      const col = i % 6;
+                      const row = Math.floor(i / 6);
+                      const randomX = (Math.random() - 0.5) * 400;
+                      const randomY = (Math.random() - 0.5) * 400;
+                      const randomRotate = (Math.random() - 0.5) * 90;
+
+                      return (
+                        <div
+                          key={`out-${i}`}
+                          className="grid-piece grid-piece-out"
+                          style={{
+                            backgroundImage: `url(${getOptimizedImageUrl(
+                              images[previousImageIndex].url,
+                              800,
+                              450
+                            )})`,
+                            backgroundPosition: `${col * 20}% ${row * 33.33}%`,
+                            '--tx': `${randomX}px`,
+                            '--ty': `${randomY}px`,
+                            '--rotate': `${randomRotate}deg`,
+                            animationDelay: `${i * 0.02}s`,
+                          } as React.CSSProperties}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Grid overlay for incoming image */}
+                {isTransitioning && (
+                  <div className="grid-overlay">
+                    {Array.from({ length: 24 }).map((_, i) => {
+                      const col = i % 6;
+                      const row = Math.floor(i / 6);
+                      const randomX = (Math.random() - 0.5) * 400;
+                      const randomY = (Math.random() - 0.5) * 400;
+                      const randomRotate = (Math.random() - 0.5) * 90;
+
+                      return (
+                        <div
+                          key={`in-${i}`}
+                          className="grid-piece grid-piece-in"
+                          style={{
+                            backgroundImage: `url(${getOptimizedImageUrl(
+                              images[selectedImageIndex].url,
+                              800,
+                              450
+                            )})`,
+                            backgroundPosition: `${col * 20}% ${row * 33.33}%`,
+                            '--tx': `${randomX}px`,
+                            '--ty': `${randomY}px`,
+                            '--rotate': `${randomRotate}deg`,
+                            animationDelay: `${i * 0.02}s`,
+                          } as React.CSSProperties}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Navigation Arrows - Only show if more than 1 image */}
                 {images.length > 1 && (
@@ -313,7 +435,8 @@ export default function TemplateDetailPage() {
                     {/* Left Arrow */}
                     <button
                       onClick={prevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/17 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10"
+                      disabled={isTransitioning}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10 disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Previous image"
                     >
                       <ChevronLeft className="w-6 h-6" />
@@ -322,7 +445,8 @@ export default function TemplateDetailPage() {
                     {/* Right Arrow */}
                     <button
                       onClick={nextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/17 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10"
+                      disabled={isTransitioning}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10 disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Next image"
                     >
                       <ChevronRight className="w-6 h-6" />

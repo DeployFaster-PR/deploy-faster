@@ -75,27 +75,30 @@ export default function SearchAndFilter({
             </div>
 
             {/* Category Filter */}
-            <div className="relative flex-1 sm:flex-none">
-              <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5 pointer-events-none" />
+            <div className="relative flex-1 sm:flex-none group">
+              <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5 pointer-events-none z-10" />
               <select
                 value={selectedCategory}
                 onChange={(e) => onCategoryChange(e.target.value)}
-                className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-apple-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white text-gray-900 sm:min-w-[180px] appearance-none cursor-pointer transition-all duration-200"
+                className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-apple-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white text-gray-900 sm:min-w-[180px] appearance-none cursor-pointer transition-all duration-200 hover:shadow-md relative z-20 shadow-deep-glass"
+                style={{
+                  backgroundImage: 'none',
+                }}
               >
                 {categories.map((category) => (
                   <option
                     key={category}
                     value={category}
-                    className="bg-white text-gray-900"
+                    className="bg-white text-gray-900 py-2"
                   >
                     {category}
                   </option>
                 ))}
               </select>
               {/* Custom dropdown arrow */}
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none z-10">
                 <svg
-                  className="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500 transition-transform duration-200 group-hover:text-blue-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

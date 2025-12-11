@@ -1,5 +1,8 @@
+'use client';
+
+import { useState } from 'react';
 import { Template } from '@/lib/types';
-import { ExternalLink, Star } from 'lucide-react';
+import { ExternalLink, Star, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCurrency } from '@/contexts/CurrencyContext';
@@ -10,6 +13,7 @@ interface TemplateCardProps {
 
 export default function TemplateCard({ template }: TemplateCardProps) {
   const { formatPrice } = useCurrency();
+  const [isPriceVisible, setIsPriceVisible] = useState(false);
 
   return (
     <div className="group animate-slide-up">
@@ -46,12 +50,42 @@ export default function TemplateCard({ template }: TemplateCardProps) {
         <div className="p-4">
           {/* Price and Title Row */}
           <div className="flex items-start justify-between mb-3">
-            <h3 className="text-lg font-semibold text-gray-900 line-clamp-1 flex-1 mr-3">
+            <h3 className="text-lg font-semibold text-gray-900 line-clamp-1 flex-1">
               {template.title}
             </h3>
-            <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent whitespace-nowrap">
-              {formatPrice(template)}
-            </span>
+
+            {/* Price Toggle Button & Price Display */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {isPriceVisible ? (
+                <>
+                  <button
+                    onClick={() => setIsPriceVisible(false)}
+                    className="p-2 hover:bg-gray-100 rounded-apple transition-all duration-200 flex items-center justify-center"
+                    aria-label="Hide price"
+                    aria-pressed="true"
+                  >
+                    <EyeOff className="w-5 h-5 text-gray-600 hover:text-gray-900" />
+                  </button>
+
+                  {/* Animated Price Display */}
+                  <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent whitespace-nowrap animate-price-reveal">
+                    {formatPrice(template)}
+                  </span>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsPriceVisible(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-gray-100 rounded-apple transition-all duration-200 group"
+                  aria-label="View price"
+                  aria-pressed="false"
+                >
+                  <Eye className="w-4 h-4 text-gray-600 group-hover:text-blue-600" />
+                  <span className="text-sm font-medium text-gray-600 group-hover:text-blue-600">
+                    View Price
+                  </span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Description */}

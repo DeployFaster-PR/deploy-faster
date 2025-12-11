@@ -7,7 +7,8 @@ import { Template } from '@/lib/types';
 import TemplateCard from '@/components/TemplateCard';
 import SearchAndFilter from '@/components/SearchAndFilter';
 import CurrencySelector from '@/components/CurrencySelector';
-import { ChevronUp, Heart, Search, Loader2, DollarSign } from 'lucide-react';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { ChevronUp, Heart, Search, Loader2, DollarSign, PoundSterling } from 'lucide-react';
 
 const TEMPLATES_PER_PAGE = 4;
 
@@ -56,6 +57,7 @@ const ROTATING_PHRASES = [
 ];
 
 export default function HomePage() {
+  const { selectedCurrency } = useCurrency();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -63,6 +65,20 @@ export default function HomePage() {
   const [displayedCount, setDisplayedCount] = useState(TEMPLATES_PER_PAGE);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+
+  // Get currency icon based on selected currency
+  const getCurrencyIcon = () => {
+    switch (selectedCurrency) {
+      case 'USD':
+        return <DollarSign className="w-4 h-4" />;
+      case 'GBP':
+        return <PoundSterling className="w-4 h-4" />;
+      case 'NGN':
+        return <span className="font-bold text-base">₦</span>;
+      default:
+        return <DollarSign className="w-4 h-4" />;
+    }
+  };
 
   // Fetch templates from Sanity
   useEffect(() => {
@@ -232,12 +248,12 @@ export default function HomePage() {
     <div className="min-h-screen pb-32 bg-gradient-to-br from-gray-50 via-gray-100 to-blue-50/30">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Currency Selector */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex-1">
-            <h3 className="text-xl text-wrap md:text-2xl font-bold text-gray-800 mb-2">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
+          <div className="flex-1 w-full lg:w-auto">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 min-h-[2rem] sm:min-h-[2.5rem]">
               <span
                 key={currentPhraseIndex}
-                className="inline-block animate-typewriter"
+                className="inline-block animate-typewriter max-w-full break-words"
               >
                 {ROTATING_PHRASES[currentPhraseIndex]}
               </span>
@@ -255,7 +271,7 @@ export default function HomePage() {
           </div>
 
           {/* Currency Selector */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end">
             {filteredTemplates.length > 0 && (
               <div className="hidden md:flex items-center gap-2 text-sm text-gray-500">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -265,7 +281,7 @@ export default function HomePage() {
 
             <div className="flex items-center gap-3">
               <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
-                <DollarSign className="w-4 h-4" />
+                {getCurrencyIcon()}
                 <span>Currency:</span>
               </div>
               <CurrencySelector compact />
@@ -363,25 +379,50 @@ export default function HomePage() {
       <style jsx>{`
         @keyframes typewriter {
           0% {
-            width: 0;
             opacity: 0;
+            transform: translateY(10px);
           }
-          1% {
+          10% {
             opacity: 1;
+            transform: translateY(0);
           }
-          50% {
-            width: 100%;
+          90% {
+            opacity: 1;
+            transform: translateY(0);
           }
           100% {
-            width: 100%;
             opacity: 1;
+            transform: translateY(0);
           }
         }
 
         .animate-typewriter {
-          overflow: hidden;
-          white-space: nowrap;
           animation: typewriter 4s ease-in-out;
+        }
+
+        @media (min-width: 768px) {
+          @keyframes typewriter {
+            0% {
+              width: 0;
+              opacity: 0;
+            }
+            1% {
+              opacity: 1;
+            }
+            50% {
+              width: 100%;
+            }
+            100% {
+              width: 100%;
+              opacity: 1;
+            }
+          }
+
+          .animate-typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typewriter 4s ease-in-out;
+          }
         }
 
         @keyframes fade-in {
