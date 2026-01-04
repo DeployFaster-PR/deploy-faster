@@ -6,9 +6,7 @@ import { templatesQuery } from '@/lib/sanity-queries';
 import { Template } from '@/lib/types';
 import TemplateCard from '@/components/TemplateCard';
 import SearchAndFilter from '@/components/SearchAndFilter';
-import CurrencySelector from '@/components/CurrencySelector';
-import { useCurrency } from '@/contexts/CurrencyContext';
-import { ChevronUp, Heart, Search, Loader2, DollarSign, PoundSterling } from 'lucide-react';
+import { ChevronUp, Heart, Search, Loader2 } from 'lucide-react';
 
 const TEMPLATES_PER_PAGE = 4;
 
@@ -57,7 +55,6 @@ const ROTATING_PHRASES = [
 ];
 
 export default function HomePage() {
-  const { selectedCurrency } = useCurrency();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,20 +62,6 @@ export default function HomePage() {
   const [displayedCount, setDisplayedCount] = useState(TEMPLATES_PER_PAGE);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
-
-  // Get currency icon based on selected currency
-  const getCurrencyIcon = () => {
-    switch (selectedCurrency) {
-      case 'USD':
-        return <DollarSign className="w-4 h-4" />;
-      case 'GBP':
-        return <PoundSterling className="w-4 h-4" />;
-      case 'NGN':
-        return <span className="font-bold text-base">₦</span>;
-      default:
-        return <DollarSign className="w-4 h-4" />;
-    }
-  };
 
   // Fetch templates from Sanity
   useEffect(() => {
@@ -247,46 +230,26 @@ export default function HomePage() {
   return (
     <div className="min-h-screen pb-32 bg-gradient-to-br from-gray-50 via-gray-100 to-blue-50/30">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header with Currency Selector */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
-          <div className="flex-1 w-full lg:w-auto">
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 min-h-[2rem] sm:min-h-[2.5rem]">
-              <span
-                key={currentPhraseIndex}
-                className="inline-block animate-typewriter max-w-full break-words"
-              >
-                {ROTATING_PHRASES[currentPhraseIndex]}
+        {/* Header */}
+        <div className="mb-8">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 min-h-[2rem] sm:min-h-[2.5rem]">
+            <span
+              key={currentPhraseIndex}
+              className="inline-block animate-typewriter max-w-full break-words"
+            >
+              {ROTATING_PHRASES[currentPhraseIndex]}
+            </span>
+          </h3>
+          <p className="text-gray-700">
+            Showing {displayedTemplates.length} of {filteredTemplates.length}{' '}
+            templates
+            {searchTerm.trim() && (
+              <span className="text-blue-600 font-medium">
+                {' '}
+                for &quot;{searchTerm.trim()}&quot;
               </span>
-            </h3>
-            <p className="text-gray-700">
-              Showing {displayedTemplates.length} of {filteredTemplates.length}{' '}
-              templates
-              {searchTerm.trim() && (
-                <span className="text-blue-600 font-medium">
-                  {' '}
-                  for &quot;{searchTerm.trim()}&quot;
-                </span>
-              )}
-            </p>
-          </div>
-
-          {/* Currency Selector */}
-          <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-end">
-            {filteredTemplates.length > 0 && (
-              <div className="hidden md:flex items-center gap-2 text-sm text-gray-500">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                Updated recently
-              </div>
             )}
-
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
-                {getCurrencyIcon()}
-                <span>Currency:</span>
-              </div>
-              <CurrencySelector compact />
-            </div>
-          </div>
+          </p>
         </div>
 
         {/* Templates Grid */}

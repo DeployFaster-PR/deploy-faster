@@ -27,6 +27,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -46,6 +48,7 @@ export default function TemplateDetailPage() {
   const [copied, setCopied] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [previousImageIndex, setPreviousImageIndex] = useState(0);
+  const [isPriceVisible, setIsPriceVisible] = useState(false);
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -200,7 +203,7 @@ export default function TemplateDetailPage() {
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-apple-lg font-medium transition-colors inline-flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Templates
+            Back to Websites
           </Link>
         </div>
       </div>
@@ -237,6 +240,10 @@ export default function TemplateDetailPage() {
           }
         }
 
+        .perspective-container {
+          perspective: 1200px;
+        }
+
         .grid-overlay {
           position: absolute;
           inset: 0;
@@ -244,41 +251,62 @@ export default function TemplateDetailPage() {
           grid-template-columns: repeat(6, 1fr);
           grid-template-rows: repeat(4, 1fr);
           z-index: 20;
+          pointer-events: none;
         }
 
         .grid-piece {
           position: relative;
-          overflow: hidden;
           background-size: 600% 400%;
+          transform-style: preserve-3d;
+          backface-visibility: hidden;
         }
+
+        /* Depth/Gradient Effect side */
+        .grid-piece::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: 0; /* Right side for rotateY(-90deg) */
+          width: 50px; /* Depth amount */
+          background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+          transform-origin: right center;
+          transform: rotateY(-90deg);
+          pointer-events: none;
+        }
+        
+        /* For the incoming piece Coming from right/left? Let's stick to one direction flip for consistency */
+        /* Let's say we always flip like a revolving door */
 
         .grid-piece-out {
-          animation: pieceOut 0.5s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards;
+          animation: cubeOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          transform-origin: center center -25px; /* Pivot point pushed back */
         }
-
+        
         .grid-piece-in {
-          animation: pieceIn 0.5s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards;
+          animation: cubeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          transform-origin: center center -25px;
         }
 
-        @keyframes pieceOut {
+        @keyframes cubeOut {
           0% {
             opacity: 1;
-            transform: translate(0, 0) rotate(0deg) scale(1);
+            transform: rotateY(0deg);
           }
           100% {
             opacity: 0;
-            transform: translate(var(--tx), var(--ty)) rotate(var(--rotate)) scale(0.3);
+            transform: rotateY(-90deg);
           }
         }
 
-        @keyframes pieceIn {
+        @keyframes cubeIn {
           0% {
             opacity: 0;
-            transform: translate(var(--tx), var(--ty)) rotate(var(--rotate)) scale(0.3);
+            transform: rotateY(90deg);
           }
           100% {
             opacity: 1;
-            transform: translate(0, 0) rotate(0deg) scale(1);
+            transform: rotateY(0deg);
           }
         }
 
@@ -340,7 +368,7 @@ export default function TemplateDetailPage() {
             className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Templates
+            Back to Websites
           </Link>
         </div>
 
@@ -348,7 +376,7 @@ export default function TemplateDetailPage() {
           {/* Left Column - Images */}
           <div className="space-y-4">
             {/* Main Image Container with Navigation Arrows */}
-            <div className="bg-white rounded-2xl overflow-hidden shadow-xl relative group">
+            <div className="bg-white rounded-2xl overflow-hidden shadow-xl relative group perspective-container">
               <div className="relative w-full aspect-[16/9] bg-gray-100">
                 {/* Base current image */}
                 <Image
@@ -371,9 +399,8 @@ export default function TemplateDetailPage() {
                     {Array.from({ length: 24 }).map((_, i) => {
                       const col = i % 6;
                       const row = Math.floor(i / 6);
-                      const randomX = (Math.random() - 0.5) * 400;
-                      const randomY = (Math.random() - 0.5) * 400;
-                      const randomRotate = (Math.random() - 0.5) * 90;
+                      // Diagonal wave delay for subtle, visible transition
+                      const delay = (col + row) * 0.05;
 
                       return (
                         <div
@@ -386,10 +413,7 @@ export default function TemplateDetailPage() {
                               450
                             )})`,
                             backgroundPosition: `${col * 20}% ${row * 33.33}%`,
-                            '--tx': `${randomX}px`,
-                            '--ty': `${randomY}px`,
-                            '--rotate': `${randomRotate}deg`,
-                            animationDelay: `${i * 0.02}s`,
+                            animationDelay: `${delay}s`,
                           } as React.CSSProperties}
                         />
                       );
@@ -403,9 +427,7 @@ export default function TemplateDetailPage() {
                     {Array.from({ length: 24 }).map((_, i) => {
                       const col = i % 6;
                       const row = Math.floor(i / 6);
-                      const randomX = (Math.random() - 0.5) * 400;
-                      const randomY = (Math.random() - 0.5) * 400;
-                      const randomRotate = (Math.random() - 0.5) * 90;
+                      const delay = (col + row) * 0.05;
 
                       return (
                         <div
@@ -418,10 +440,7 @@ export default function TemplateDetailPage() {
                               450
                             )})`,
                             backgroundPosition: `${col * 20}% ${row * 33.33}%`,
-                            '--tx': `${randomX}px`,
-                            '--ty': `${randomY}px`,
-                            '--rotate': `${randomRotate}deg`,
-                            animationDelay: `${i * 0.02}s`,
+                            animationDelay: `${delay}s`,
                           } as React.CSSProperties}
                         />
                       );
@@ -436,7 +455,7 @@ export default function TemplateDetailPage() {
                     <button
                       onClick={prevImage}
                       disabled={isTransitioning}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-30 disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Previous image"
                     >
                       <ChevronLeft className="w-6 h-6" />
@@ -446,14 +465,14 @@ export default function TemplateDetailPage() {
                     <button
                       onClick={nextImage}
                       disabled={isTransitioning}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-10 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 z-30 disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Next image"
                     >
                       <ChevronRight className="w-6 h-6" />
                     </button>
 
                     {/* Image Counter */}
-                    <div className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-4 right-4 bg-black/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
                       {selectedImageIndex + 1} / {images.length}
                     </div>
                   </>
@@ -514,17 +533,41 @@ export default function TemplateDetailPage() {
                     <span className="bg-blue-100/80 text-blue-700 px-3 py-1 rounded-full font-medium backdrop-blur-sm">
                       {template.category}
                     </span>
-                    <span>
-                      {new Date(template.createdAt).toLocaleDateString()}
-                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="text-right mb-4">
-                <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  {formatPrice(template)}
-                </div>
+              {/* Price Toggle Section */}
+              <div className="flex items-center justify-end gap-3 mb-4">
+                {isPriceVisible ? (
+                  <>
+                    <button
+                      onClick={() => setIsPriceVisible(false)}
+                      className="p-2 hover:bg-white/50 rounded-lg transition-all duration-200 flex items-center justify-center"
+                      aria-label="Hide price"
+                      aria-pressed="true"
+                    >
+                      <EyeOff className="w-5 h-5 text-gray-600 hover:text-gray-900" />
+                    </button>
+
+                    {/* Animated Price Display */}
+                    <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent whitespace-nowrap animate-price-reveal">
+                      {formatPrice(template)}
+                    </span>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setIsPriceVisible(true)}
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-white/50 rounded-lg transition-all duration-200 group"
+                    aria-label="View price"
+                    aria-pressed="false"
+                  >
+                    <Eye className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
+                    <span className="text-base font-medium text-gray-600 group-hover:text-blue-600">
+                      View Price
+                    </span>
+                  </button>
+                )}
               </div>
 
               <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
@@ -631,7 +674,7 @@ export default function TemplateDetailPage() {
         {template.longDescription && (
           <div className="mt-12 backdrop-blur-xl bg-white/30 border border-white/20 rounded-2xl p-6 sm:p-8 shadow-deep-glass">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              About This Template
+              About This Website
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
               <PortableText value={template.longDescription} />
